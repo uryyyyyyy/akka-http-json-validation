@@ -5,7 +5,7 @@ lazy val root = (project in file("."))
   .settings(
     name := "akka-http-json-validation",
     organization := "com.github.uryyyyyyy",
-    version := "0.0.1-SNAPSHOT",
+    version := "0.0.1",
     licenses := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
     homepage := Some(url("https://github.com/uryyyyyyy/akka-http-json-validation")),
     scmInfo := Some(
@@ -33,11 +33,11 @@ lazy val root = (project in file("."))
         Some("releases"  at nexus + "service/local/staging/deploy/maven2")
     },
     libraryDependencies ++= Seq(
-      "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+      "com.typesafe.akka" %% "akka-stream" % akkaVersion % Provided,
       "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
       "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
       "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
       "org.scalatest" %% "scalatest" % "3.0.5" % Test
-    ),
-    publishTo := Some(Resolver.file("file",  new File(s"${System.getProperty("user.home")}/Desktop/")) )
+    )
+    //publishTo := Some(Resolver.file("file",  new File(s"${System.getProperty("user.home")}/Desktop/")) )
   )
