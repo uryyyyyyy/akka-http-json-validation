@@ -5,7 +5,7 @@ lazy val root = (project in file("."))
   .settings(
     name := "akka-http-json-validation",
     organization := "com.github.uryyyyyyy",
-    version := "0.0.1",
+    version := "0.1.0",
     licenses := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
     homepage := Some(url("https://github.com/uryyyyyyy/akka-http-json-validation")),
     scmInfo := Some(

@@ -6,7 +6,7 @@ lazy val root = (project in file("."))
     scalaVersion := "2.12.7",
     libraryDependencies ++= Seq(
       "com.typesafe.akka" %% "akka-stream" % akkaVersion,
-      "com.github.uryyyyyyy" %% "akka-http-json-validation" % "0.0.1",
+      "com.github.uryyyyyyy" %% "akka-http-json-validation" % "0.1.0",
       "ch.qos.logback" % "logback-classic" % "1.2.3"
     ),
     resolvers += "Local Maven Repository" at s"file:/${System.getProperty("user.home")}/Desktop/"
