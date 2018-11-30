@@ -1,4 +1,4 @@
-val akkaVersion = "2.5.13"
+val akkaVersion = "2.5.18"
 val akkaHttpVersion = "10.1.5"
 
 lazy val root = (project in file("."))
@@ -23,8 +23,8 @@ lazy val root = (project in file("."))
       )
     ),
     publishMavenStyle := true,
-    scalaVersion := "2.11.12",
-    crossScalaVersions := Seq("2.11.12", "2.12.6"),
+    scalaVersion := "2.12.7",
+    crossScalaVersions := Seq("2.11.12", "2.12.7"),
     publishTo := {
       val nexus = "https://oss.sonatype.org/"
       if (isSnapshot.value)

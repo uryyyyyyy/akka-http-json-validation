@@ -6,4 +6,5 @@ import spray.json.{DefaultJsonProtocol, PrettyPrinter}
 trait CustomJsonFormat extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val printer = PrettyPrinter
   implicit val tagFormat = jsonFormat2(Tag)
+  implicit val nestedTagFormat = jsonFormat2(NestedTag)
 }
