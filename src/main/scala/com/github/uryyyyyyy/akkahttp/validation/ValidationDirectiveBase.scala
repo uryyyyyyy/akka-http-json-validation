@@ -7,13 +7,11 @@ import akka.http.scaladsl.unmarshalling.FromRequestUnmarshaller
 import spray.json.{JsArray, JsField, JsObject, JsString, JsValue}
 
 trait ValidatorBase[T] {
-  type ValidationErrorValue = Option[JsValue]
-  def validate(model: T): ValidationErrorValue
+  def validate(model: T): Option[JsValue]
 }
 
 trait ValidatorSeq[T] extends ValidatorBase[Seq[T]] {
-  type ValidationError = Option[JsArray]
-  type Validation = Seq[T] => ValidationErrorValue
+  type Validation = Seq[T] => Option[JsValue]
 
   protected def genValidation(rule: Seq[T] => Boolean, errorText: String): Validation = { models: Seq[T] =>
     if (rule(models)) Some(JsString(errorText)) else None
@@ -22,7 +20,7 @@ trait ValidatorSeq[T] extends ValidatorBase[Seq[T]] {
   val validatorInternal: ValidatorBase[T]
   val validations: Seq[Validation]
 
-  override def validate(models: Seq[T]): ValidationErrorValue = {
+  override def validate(models: Seq[T]): Option[JsValue] = {
     val opt = validations.map(v => v(models)).filter(_.isDefined)
     if (opt.nonEmpty) {
       Some(JsArray(opt.map(_.get):_*))
@@ -34,7 +32,6 @@ trait ValidatorSeq[T] extends ValidatorBase[Seq[T]] {
 }
 
 trait Validator[T] extends ValidatorBase[T] {
-  type ValidationError = Option[JsObject]
   type Validation = T => Option[JsField]
 
   protected def genValidation(fieldName: String, rule: T => Boolean, errorText: String): Validation = { model: T =>
@@ -48,7 +45,7 @@ trait Validator[T] extends ValidatorBase[T] {
 
   val validations: Seq[Validation]
 
-  override def validate(model: T): ValidationErrorValue = {
+  override def validate(model: T): Option[JsValue] = {
     val opt = validations.map(v => v(model)).filter(_.isDefined)
     if (opt.isEmpty) {
       None
@@ -60,17 +57,17 @@ trait Validator[T] extends ValidatorBase[T] {
 
 trait ValidationDirectiveBase extends Directives with SprayJsonSupport {
 
-  def asV[T](implicit um: FromRequestUnmarshaller[T], validator: ValidatorBase[T]): (FromRequestUnmarshaller[T], ValidatorBase[T]) = (um, validator)
+  def as[T](implicit um: FromRequestUnmarshaller[T], validator: ValidatorBase[T]): (FromRequestUnmarshaller[T], ValidatorBase[T]) = (um, validator)
 
-  def validateModel[T](tpl: (FromRequestUnmarshaller[T], ValidatorBase[T])): Directive1[T] = {
+  def validate[T](tpl: (FromRequestUnmarshaller[T], ValidatorBase[T])): Directive1[T] = {
     val (um, validator) = tpl
     for {
       model <- entity(um)
-      validated <- validate(model, validator)
+      validated <- validateRecursive(model, validator)
     } yield validated
   }
 
-  private def validate[T](model: T, validator: ValidatorBase[T]): Directive1[T] = {
+  private def validateRecursive[T](model: T, validator: ValidatorBase[T]): Directive1[T] = {
     val obj = validator.validate(model)
     if (obj.isEmpty) {
       provide(model)

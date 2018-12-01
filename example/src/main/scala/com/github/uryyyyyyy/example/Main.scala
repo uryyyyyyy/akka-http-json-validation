@@ -29,15 +29,15 @@ object Main extends CustomValidationDirectives with CustomJsonFormat {
 
   val route = post {
     path("tag") {
-      validateModel(asV[Tag]) { validatedTag =>
+      validate(as[Tag]) { validatedTag =>
         complete(validatedTag)
       }
     } ~ path("tags") {
-      validateModel(asV[Seq[Tag]]) { validatedTags =>
+      validate(as[Seq[Tag]]) { validatedTags =>
         complete(validatedTags)
       }
     } ~ path("nestedTag") {
-      validateModel(asV[NestedTag]) { nestedTag =>
+      validate(as[NestedTag]) { nestedTag =>
         complete(nestedTag)
       }
     }
